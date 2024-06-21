@@ -8,6 +8,7 @@ module.exports = {
     var dummyJSON = [];
 
     for(var i =0 ; i<5000; i++){
+      let agent_id = 'A' + String(i % 500 + 1).padStart(3, '0');
       const startTime = new Date(new Date().getTime() - (Math.floor(Math.random() * (24 * 60 * 60 * 1000))));
       let randomMinutes;
       do {
@@ -15,7 +16,7 @@ module.exports = {
       } while (randomMinutes === 0);
       const endTime = new Date(startTime.getTime() + randomMinutes * 60000);
       dummyJSON.push({
-        agent_id : faker.random.alphaNumeric(5),
+        agent_id :agent_id,
         start_time : startTime,
         end_time : endTime,
         action_code : faker.random.arrayElement(['ptp', 'promise', 'ppp']),
