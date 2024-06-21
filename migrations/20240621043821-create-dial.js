@@ -10,19 +10,24 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       agent_id: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        null: false
       },
       start_time: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        null: false
       },
       end_time: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        null: false
       },
       action_code: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        null: false
       },
       dpd: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        null: false
       },
       createdAt: {
         allowNull: false,

@@ -4,29 +4,30 @@ var faker = require('faker');
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up (queryInterface, Sequelize) {
+  async up(queryInterface, Sequelize) {
     var dummyJSON = [];
 
-    for(var i =0 ; i<5000; i++){
+    for (var i = 0; i < 5000; i++) {
       let agent_id = 'A' + String(i % 500 + 1).padStart(3, '0');
-      const startTime = new Date(new Date().getTime() - (Math.floor(Math.random() * (24 * 60 * 60 * 1000))));
+      const startTime = new Date(
+        new Date().getTime() - Math.floor(Math.random() * (2 * 60 * 60 * 1000))
+      );
       let randomMinutes;
       do {
-        randomMinutes = Math.floor(Math.random() * 10) + 1; 
+        randomMinutes = Math.floor(Math.random() * 10) + 1;
       } while (randomMinutes === 0);
       const endTime = new Date(startTime.getTime() + randomMinutes * 60000);
       dummyJSON.push({
-        agent_id :agent_id,
-        start_time : startTime,
-        end_time : endTime,
-        action_code : faker.random.arrayElement(['ptp', 'promise', 'ppp']),
-        dpd : faker.random.number({min: 30, max: 90}),
-        createdAt : new Date(),
-        updatedAt : new Date(),
-      })
+        agent_id: agent_id,
+        start_time: startTime,
+        end_time: endTime,
+        action_code: 'PTP',
+        dpd: faker.random.number({ min: 0, max: 210 }),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
     }
     await queryInterface.bulkInsert('Dials', dummyJSON, {});
-    
 
     // return queryInterface.bulkInsert('Dials', [
     //   {
@@ -41,7 +42,7 @@ module.exports = {
     // ]);
   },
 
-  async down (queryInterface, Sequelize) {
+  async down(queryInterface, Sequelize) {
     return queryInterface.bulkDelete('Dials', null, {});
-  }
+  },
 };
