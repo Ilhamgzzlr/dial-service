@@ -4,41 +4,68 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('Dials', {
       id: {
-        allowNull: false,
+        type: Sequelize.INTEGER,
         autoIncrement: true,
-        primaryKey: true,
+        primaryKey: true
+      },
+      account_no: {
+        type: Sequelize.STRING
+      },
+      start_time: {
+        type: Sequelize.DATE
+      },
+      end_time: {
+        type: Sequelize.DATE
+      },
+      dpd: {
         type: Sequelize.INTEGER
       },
       agent_id: {
-        type: Sequelize.STRING,
-        null: false
-      },
-      start_time: {
-        type: Sequelize.DATE,
-        null: false
-      },
-      end_time: {
-        type: Sequelize.DATE,
-        null: false
+        type: Sequelize.STRING
       },
       action_code: {
-        type: Sequelize.STRING,
-        null: false
+        type: Sequelize.STRING
       },
-      dpd: {
-        type: Sequelize.INTEGER,
-        null: false
+      bucket: {
+        type: Sequelize.STRING
       },
       createdAt: {
-        allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        allowNull: false
       },
       updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        allowNull: false
       }
     });
+
+    const fs = require('fs');
+    const path = require('path');
+    const sqlFilePath = path.join(__dirname, 'call_history.sql');
+    const sqlData = await fs.promises.readFile(sqlFilePath, 'utf8');
+    const rows = sqlData.split('\n')
+      .filter(row => !row.startsWith('/*!'))
+      .filter(row => row.trim() !== '')
+      .map(row => row.trim());
+
+    const dialData = rows.map(row => {
+      const [account_no, start_time, end_time, dpd, agent_id, action_code, bucket] = row.split(',');
+      return {
+        account_no,
+        start_time: new Date(start_time),
+        end_time: new Date(end_time),
+        dpd: parseInt(dpd),
+        agent_id,
+        action_code,
+        bucket,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+    });
+
+    await queryInterface.bulkInsert('Dials', dialData);
   },
+
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('Dials');
   }
